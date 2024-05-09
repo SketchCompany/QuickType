@@ -2,19 +2,27 @@
   "name": "quicktypels",
   "version": "0.0.1",
   "description": "The official node package for the official programming language named 'Quick Type' and is developed by the Sketch Company",
-  "main": "index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SketchCompany/QuickType.git"
   },
   "keywords": [
+    "quicktypels",
     "quicktype",
     "qt",
     "quick",
     "type",
+    "ls",
     "programming",
     "language",
     "sketch",
@@ -28,7 +36,15 @@
   },
   "homepage": "https://github.com/SketchCompany/QuickType#readme",
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "tsup": "^8.0.2",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }
