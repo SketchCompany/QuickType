@@ -1,4 +1,4 @@
-# Node Package Quick Type
+# Quick Type Language Support
 
 This is the official node package, made for the official programming language "Quick Type", which is developed by the Sketch Company.
 If you want to write short code and like to have the same results as in javascript, this is the perefect option for you!
