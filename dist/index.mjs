@@ -833,7 +833,12 @@ function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
     console.log("\nLanguage v0.1\n");
-    const input = fs.readFileSync(inputSource).toString();
+    let input;
+    if (inputSource.includes(".quicktype") || inputSource.includes(".quick") || inputSource.includes(".qt")) {
+      input = fs.readFileSync(inputSource).toString();
+    } else {
+      input = inputSource;
+    }
     const parser = new Parser();
     const program = parser.produceAST(input);
     const result = interpret(program, env);
