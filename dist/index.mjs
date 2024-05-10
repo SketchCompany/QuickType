@@ -832,7 +832,7 @@ import * as fs from "fs";
 function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
-    console.log("\nLanguage v0.1\n");
+    console.log("\nQuick Type v0.0.1\n");
     let input;
     if (inputSource.includes(".quicktype") || inputSource.includes(".quick") || inputSource.includes(".qt")) {
       input = fs.readFileSync(inputSource).toString();

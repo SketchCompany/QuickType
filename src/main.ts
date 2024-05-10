@@ -10,7 +10,7 @@ import * as fs from "fs";
 export async function runLanguage(inputSource: string) {
     const env = createGlobalEnvironment()
 
-    console.log("\nLanguage v0.1\n")
+    console.log("\nQuick Type v0.0.1\n")
 
     let input:string
     if(inputSource.includes(".quicktype") || inputSource.includes(".quick") || inputSource.includes(".qt")){

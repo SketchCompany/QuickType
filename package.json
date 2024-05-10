@@ -1,6 +1,6 @@
 {
   "name": "quicktypels",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The official node package for the official programming language named 'Quick Type' and is developed by the Sketch Company",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "bin": {
-    "quick": "./src/runQuickType.ps1"
+    "quick": "./cli.js"
   },
   "repository": {
     "type": "git",
