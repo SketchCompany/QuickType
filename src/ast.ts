@@ -6,7 +6,6 @@ export type NodeType =
   | "VarDeclaration"
   | "FunctionDeclaration"
   | "IfDeclaration"
-  | "ForDeclaration"
   | "WhileDeclaration"
 
   // expressions
@@ -21,6 +20,7 @@ export type NodeType =
   | "StringLiteral"
   | "Identifier"
   | "BinaryExpr"
+  | "ArrayLiteral"
 
 
 export interface Stmt{
@@ -107,9 +107,8 @@ export interface IfDeclaration extends Expr{
   elseIfDeclaration?: IfDeclaration
   elseBody?: Stmt[]
 }
-export interface ForDeclaration extends Expr{
-  kind: "ForDeclaration"
-  count: Expr
-  body: Stmt[]
-  name: string
+
+export interface ArrayLiteral extends Expr{
+  kind: "ArrayLiteral"
+  elements: Expr[]
 }

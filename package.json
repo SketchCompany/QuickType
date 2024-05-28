@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "jest"
+    "jest": "jest",
+    "test": "ts-node ./src/index.ts"
   },
   "bin": {
     "quick": "./cli.js"

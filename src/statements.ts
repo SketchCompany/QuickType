@@ -1,4 +1,4 @@
-import { BinaryExpr, ForDeclaration, FunctionDeclaration, IfDeclaration, NumericLiteral, Program, VarDeclaration } from "./ast"
+import { BinaryExpr, FunctionDeclaration, IfDeclaration, NumericLiteral, Program, VarDeclaration } from "./ast"
 import Environment from "./environment"
 import { interpret } from "./interpreter"
 import { BooleanValue, FunctionValue, RuntimeValue, create_null } from "./values"
@@ -57,20 +57,4 @@ export function interpret_if_declaration(declaration: IfDeclaration, env: Enviro
     else{
         return create_null()
     } 
-}
-
-export function interpret_for_declaration(declaration: ForDeclaration, env: Environment): RuntimeValue{
-    if(declaration.count.kind == "NumericLiteral"){
-        let result:any
-        for(let i = 0; i < (declaration.count as NumericLiteral).value; i++){
-            for(const stmt of declaration.body){
-                result = interpret(stmt, env)
-            }
-        }
-        return result
-    }
-    else{
-        console.log("Count in interpretation of for declaration was not a numeric literal: ", declaration.count)
-        return create_null()
-    }
 }

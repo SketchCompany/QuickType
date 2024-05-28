@@ -1,4 +1,4 @@
-import {Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, IfDeclaration, FunctionDeclaration, AssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, StringLiteral, ForDeclaration} from "./ast"
+import {Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, IfDeclaration, FunctionDeclaration, AssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, StringLiteral, ArrayLiteral} from "./ast"
 import { tokenize, Token, TokenType } from "./lexer"
 
 export default class Parser{
@@ -55,8 +55,6 @@ export default class Parser{
                 return this.parse_fn_declaration()
             case TokenType.If:
                 return this.parse_if_stmt()
-            case TokenType.For:
-                return this.parse_for_stmt()
             case TokenType.While:
                 return this.parse_if_stmt()
             default:
@@ -64,24 +62,24 @@ export default class Parser{
         }
     }
 
-    private parse_for_stmt(): Stmt {
-        this.shift() // remove for
+    // private parse_for_stmt(): Stmt {
+    //     this.shift() // remove for
 
-        const name = this.expected(TokenType.Identifier, "Expected for loop name following for keyword.").value
+    //     const name = this.expected(TokenType.Identifier, "Expected for loop name following for keyword.").value
 
-        this.expected(TokenType.OpenParen, "Expected opening parentheses in for loop declaration.")
-        const count = this.parse_additive_expr()
-        this.expected(TokenType.CloseParen, "Missing closing parentheses in for loop decalration.")
+    //     this.expected(TokenType.OpenParen, "Expected opening parentheses in for loop declaration.")
+    //     const count = this.parse_additive_expr()
+    //     this.expected(TokenType.CloseParen, "Missing closing parentheses in for loop decalration.")
 
-        this.expected(TokenType.OpenBrace, "Expected opening brace in for loop declaration.")
-        const body: Stmt[] = []
+    //     this.expected(TokenType.OpenBrace, "Expected opening brace in for loop declaration.")
+    //     const body: Stmt[] = []
 
-        while(this.get().type !== TokenType.EOF && this.get().type !== TokenType.CloseBrace){
-            body.push(this.parse_stmt())
-        }
-        this.expected(TokenType.CloseBrace, "Expected closing brace in for loop declaration.")
-        return {kind: "ForDeclaration", name, count, body} as ForDeclaration
-    }
+    //     while(this.get().type !== TokenType.EOF && this.get().type !== TokenType.CloseBrace){
+    //         body.push(this.parse_stmt())
+    //     }
+    //     this.expected(TokenType.CloseBrace, "Expected closing brace in for loop declaration.")
+    //     return {kind: "ForDeclaration", name, count, body} as ForDeclaration
+    // }
 
     private parse_fn_declaration(): Stmt {
         this.shift() // remove fn keyword
@@ -176,6 +174,7 @@ export default class Parser{
 
     // presidence
     // Assignment
+    // Array
     // Object
     // Additve
     // Multiplicative
@@ -188,7 +187,7 @@ export default class Parser{
     }
 
     private parse_assignment_expr(): Expr {
-        const left = this.parse_object_expr()
+        const left = this.parse_array()
 
         if(this.get().type == TokenType.Equals){
             this.shift()
@@ -196,6 +195,25 @@ export default class Parser{
             return {value, assigne: left, kind: "AssignmentExpr"} as AssignmentExpr
         }
         return left
+    }
+
+    private parse_array(): Expr {
+        if(this.get().type == TokenType.OpenBracket){
+            this.shift()
+            const elements:Expr[] = []
+
+            while(this.get().type != TokenType.EOF && this.get().type != TokenType.CloseBracket){
+                const element = this.parse_object_expr()
+                elements.push(element)
+                if(this.get().type != TokenType.Comma){
+                    break
+                }
+                else this.expected(TokenType.Comma, "Expected comma after declaration of an array element.")
+            }
+            this.expected(TokenType.CloseBracket, "Unexpected token found inside array expression. Expected clsoing bracket.")
+            return {kind: "ArrayLiteral", elements} as ArrayLiteral
+        }
+        else return this.parse_object_expr()
     }
 
     private parse_object_expr(): Expr {
@@ -388,9 +406,9 @@ export default class Parser{
                 return {kind: "StringLiteral", value: this.shift().value } as StringLiteral
             case TokenType.OpenParen:
                 this.shift()
-                const value = this.parse_expr()
-                this.expected(TokenType.CloseParen, "Unexpected token found inside parenthesised expression. Expected closing parenthes")
-                return value
+                const expressionValue = this.parse_expr()
+                this.expected(TokenType.CloseParen, "Unexpected token found inside parenthesised expression. Expected closing parenthes.")
+                return expressionValue
             default:
                 console.error("Unexpected token ", this.get(), " found during parsing")
                 throw new Error("Unexpected token " + JSON.stringify(this.get()) + " found during parsing")

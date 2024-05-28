@@ -1,7 +1,7 @@
 import { Expr, Stmt } from "./ast"
 import Environment from "./environment"
 
-export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "nativeFn" | "function" | "member" | "if"
+export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "nativeFn" | "function" | "member" | "if" | "array"
 
 export interface RuntimeValue {
     type: ValueType
@@ -65,4 +65,14 @@ export interface FunctionValue extends RuntimeValue {
     parameters: string[]
     declarationEnv: Environment
     body: Stmt[]
+}
+
+// export interface ArrayValue extends RuntimeValue {
+//     type: "array",
+//     elements: RuntimeValue[],
+// }
+
+export interface ArrayValue extends RuntimeValue {
+    type: "array",
+    elements: Expr[],
 }

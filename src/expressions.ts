@@ -1,8 +1,8 @@
-import { AssignmentExpr, BinaryExpr, CallExpr, Expr, Identifier, MemberExpr, ObjectLiteral, StringLiteral } from "./ast"
+import { ArrayLiteral, AssignmentExpr, BinaryExpr, CallExpr, Expr, Identifier, MemberExpr, ObjectLiteral, StringLiteral } from "./ast"
 import Environment from "./environment"
 import { interpret } from "./interpreter"
 import { Token, TokenType } from "./lexer"
-import { BooleanValue, FunctionValue, NativeFnValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_nativeFn, create_null } from "./values"
+import { ArrayValue, BooleanValue, FunctionValue, NativeFnValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_nativeFn, create_null } from "./values"
 
 
 
@@ -132,6 +132,26 @@ export function interpret_member_expr(expr: MemberExpr, env: Environment): Runti
         if(!value) value = create_null()
         return value
     }
+    else if(lhs.type == "array"){
+        const array = lhs as ArrayValue
+        let value:any
+        if(expr.computed){
+            if(expr.property.kind == "NumericLiteral"){
+                const computedValue = interpret(expr.property, env)
+                if(!computedValue || computedValue.type != "number"){
+                    console.error("Cannot interpret array expression: ", expr.property)
+                    throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property))
+                }
+                value = interpret(array.elements[(computedValue as NumberValue).value], env)
+            }
+            else{
+                console.error("Cannot interpret array expression, because computed value is not a number: ", expr.property)
+                throw new Error("Cannot interpret array expression, because computed value is not a number: " + JSON.stringify(expr.property))
+            }
+        }
+        else throw new Error("Cannot interpret array expression, becuase it is not set as an computed expression.")
+        return value
+    }
     return lhs
 }
 
@@ -148,16 +168,20 @@ export function interpret_call_expr(expr: CallExpr, env: Environment): RuntimeVa
         const func = fn as FunctionValue
         const scope = new Environment(func.declarationEnv)
 
+        // if(func.parameters.length < args.length){
+        //     throw new Error("Cannot assign more arguments than the function can handle: parameters: " + func.parameters.length + " passed arguments: " + args.length)
+        // }
+        // else if(func.parameters.length > args.length)
+        // {
+        //     throw new Error("Cannot assign less arguments than the function handles: needed paramters: " + func.parameters.length)
+        // }
+
         for (let i = 0; i < func.parameters.length; i++) {
-            if(func.parameters.length < args.length){
-                throw new Error("Cannot assign more arguments than the function can handle: parameters: " + func.parameters.length + " passed arguments: " + args.length)
-            }
-            else if(func.parameters.length > args.length)
-            {
-                throw new Error("Cannot assign less arguments than the function handles: needed paramters: " + func.parameters.length)
-            }
             const varname = func.parameters[i];
-            scope.declareVar(varname, args[i], false)
+            if(args.length - 1 < i){
+                scope.declareVar(varname, create_null(), false)
+            }
+            else scope.declareVar(varname, args[i], false)
         }
 
         let result: RuntimeValue = create_null()
@@ -180,4 +204,15 @@ export function interpret_assignment(node: AssignmentExpr, env: Environment): Ru
 
     const varname = (node.assigne as Identifier).symbol
     return env.assignVar(varname, interpret(node.value, env))
+}
+
+export function interpret_array(node: ArrayLiteral, env: Environment): RuntimeValue{
+    // const array:RuntimeValue[] = []
+    // for (let i = 0; i < node.elements.length; i++) {
+    //     const element = interpret(node.elements[i], env);
+    //     array.push(element)
+    // }
+    // return {type: "array", elements: array} as ArrayValue
+
+    return {type: "array", elements: node.elements} as ArrayValue
 }

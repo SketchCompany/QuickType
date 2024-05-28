@@ -41,7 +41,6 @@ export enum TokenType{
     Fn,
     If,
     Else,
-    For,
     While,
     Return,
 
@@ -67,7 +66,6 @@ const KEYWORDS: Record<string, TokenType> = {
     "ls": TokenType.LessComperator,
     "ngt": TokenType.NotGreaterComperator,
     "nls": TokenType.NotLessComperator,
-    "for": TokenType.For,
     "while": TokenType.While,
 }
 
