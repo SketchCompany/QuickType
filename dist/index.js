@@ -76,7 +76,7 @@ var KEYWORDS = {
   "ngt": 24 /* NotGreaterComperator */,
   "nls": 25 /* NotLessComperator */,
   "while": 31 /* While */,
-  "i": 33 /* Import */
+  "quicky": 33 /* Import */
 };
 function addToken(value = "", type) {
   return { value, type };
@@ -586,10 +586,14 @@ var Natives = class {
         console.log(arg);
         return create_null();
       }
-      finalLog += "   ";
+      finalLog += "  ";
     }
     console.log(finalLog);
     return create_null();
+  }
+  time(args, scope) {
+    const time = Date.now();
+    return create_number(time);
   }
   upper(args, scope) {
     let result = create_null();
@@ -612,11 +616,11 @@ var Natives = class {
   for(args, scope) {
     if (args[1].type == "function") {
       if (args[0].type == "number") {
-        const count = args[1].value;
+        const count = args[0].value;
         for (let i = 0; i < count; i++) {
           interpret_call_expr({ kind: "CallExpr", args: [
             { kind: "NumericLiteral", value: i }
-          ], caller: { kind: "Identifier", symbol: args[0].name } }, scope);
+          ], caller: { kind: "Identifier", symbol: args[1].name } }, scope);
         }
       } else if (args[0].type == "array") {
         const array = args[0].elements;
@@ -629,7 +633,8 @@ var Natives = class {
             { kind: "ArrayLiteral", elements: array }
           ], caller: { kind: "Identifier", symbol: args[1].name } }, scope);
         }
-      }
+      } else
+        throw new Error("Invalid paramter at position 0. Cannot use " + args[0] + " as first parameter");
     }
     return create_null();
   }
@@ -646,7 +651,7 @@ function createGlobalEnvironment() {
   env.declareVar("upper", create_nativeFn(natives.upper), true);
   env.declareVar("lower", create_nativeFn(natives.lower), true);
   env.declareVar("for", create_nativeFn(natives.for), true);
-  env.declareVar("time", create_number(Date.now()), true);
+  env.declareVar("time", create_nativeFn(natives.time), true);
   return env;
 }
 var Environment = class {
@@ -804,19 +809,21 @@ function interpret_member_expr(expr, env) {
     const array = lhs;
     let value;
     if (expr.computed) {
-      if (expr.property.kind == "NumericLiteral") {
-        const computedValue = interpret(expr.property, env);
-        if (!computedValue || computedValue.type != "number") {
-          console.error("Cannot interpret array expression: ", expr.property);
-          throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property));
-        }
-        value = interpret(array.elements[computedValue.value], env);
-      } else {
-        console.error("Cannot interpret array expression, because computed value is not a number: ", expr.property);
-        throw new Error("Cannot interpret array expression, because computed value is not a number: " + JSON.stringify(expr.property));
+      const computedValue = interpret(expr.property, env);
+      if (!computedValue || computedValue.type != "number") {
+        console.error("Cannot interpret array expression: ", expr.property);
+        throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property));
       }
+      const index = computedValue.value;
+      if (array.elements.length < index) {
+        throw new Error("Cannot get value from array, because it is out of range.");
+      }
+      const arrayElement = array.elements.at(index);
+      if (!arrayElement)
+        throw new Error("Value from array could not be found at position " + index + ". Value was " + arrayElement);
+      value = interpret(arrayElement, env);
     } else
-      throw new Error("Cannot interpret array expression, becuase it is not set as an computed expression.");
+      throw new Error("Cannot interpret array expression, because it is not set as an computed expression.");
     return value;
   }
   return lhs;
