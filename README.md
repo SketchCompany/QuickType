@@ -18,9 +18,11 @@ This is the changelog of the language, not really the node package itself, becau
 > [!NOTE]
 > We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
 
+<br>
+
 - added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)
 
-<details><summary><b>Show instructions</b></summary>
+- <details><summary><b>Show instructions</b></summary>
 
 To import a script, use the keyword "quicky" (stands for "quickly import a .quick file") followed by a string with the filename without the ".quick" extension
 `mainScript.quick`
@@ -56,7 +58,7 @@ c export = {
 
 - added HTML support
 
-<details><summary><b>Show instructions</b></summary>
+- <details><summary><b>Show instructions</b></summary>
 
 You can now assign HTML to variables by using the "</>" symbol.
 `htmlSupport.quick`
@@ -86,17 +88,18 @@ c html = </>
 
 log("html", html)
 ```
-</details>
 
 This can be used in the future for creating a REST API and sending HTML to the frontend.
 That will be possible in future updates of Quick Type.
+
+</details>
 
 - fixed bugs with using for loops and arrays
 - removed support for files with ".qt" extension
 - support set only for ".quick" and ".quicktype" file extensions
 - todo: add variable support for html
 
-<details><summary><b>Show example</b></summary>
+- <details><summary><b>Show example</b></summary>
 
 So you could do something like this
 `future.quick`
