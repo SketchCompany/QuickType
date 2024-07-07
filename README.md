@@ -12,9 +12,9 @@ If you'd like to know how to use "Quick Type", you can visit our documentation a
 This is the changelog of the language, not really the node package itself, because the version of the node package changes more often than the language itself. So don't worry about the versions, that the changelog shows, they are correct.
 
 ### 0.0.3
-[!WARNING]
+> [!WARNING]
 > Support for ".qt" file extensions has been stopped and does not work anymore!
-[!NOTE]
+> [!NOTE]
 > We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
 
 - added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)
@@ -135,7 +135,7 @@ log("html", html)
 ```
 </details>
 
-[!NOTE]
+> [!NOTE]
 > We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
 
 ### 0.0.2
