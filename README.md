@@ -146,9 +146,6 @@ log("html", html)
 ```
 </details>
 
-> [!NOTE]
-> We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
-
 ## 0.0.2
 
 <details><summary><b>added arrays</b></summary>
