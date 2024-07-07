@@ -22,7 +22,7 @@ This is the changelog of the language, not really the node package itself, becau
 
 - added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)
 
-- <details><summary><b>Show instructions</b></summary>
+<details><summary><b>Show example</b></summary>
 
 To import a script, use the keyword "quicky" (stands for "quickly import a .quick file") followed by a string with the filename without the ".quick" extension
 
@@ -64,7 +64,7 @@ c export = {
 
 - added HTML support
 
-* <details><summary><b>Show instructions</b></summary>
+* <details><summary><b>Show example</b></summary>
 
 You can now assign HTML to variables by using the "</>" symbol.
 
@@ -108,7 +108,7 @@ That will be possible in future updates of Quick Type.
 - support set only for ".quick" and ".quicktype" file extensions
 - todo: add variable support for html
 
-- <details><summary><b>Show example</b></summary>
+<details><summary><b>Show example</b></summary>
 
 So you could do something like this
 
@@ -157,7 +157,7 @@ log("html", html)
 ## 0.0.2
 - added arrays
 
-- <details><summary><b>Show instructions</b></summary>
+<details><summary><b>Show example</b></summary>
 
 You can use array by using the "[]" brackets like in every other programming language.
 
@@ -183,7 +183,7 @@ log("array:", array2[2], array[2])
 
 - added for loops
 
-- <details><summary><b>Show instructions</b></summary>
+<details><summary><b>Show example</b></summary>
 
 You can use for loops for arrays like this
 
