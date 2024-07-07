@@ -20,9 +20,7 @@ This is the changelog of the language, not really the node package itself, becau
 
 <br>
 
-- added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)
-
-<details><summary><b>Show example</b></summary>
+<details><summary><b>added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)</b></summary>
 
 To import a script, use the keyword "quicky" (stands for "quickly import a .quick file") followed by a string with the filename without the ".quick" extension
 
@@ -62,9 +60,7 @@ c export = {
 ```
 </details>
 
-- added HTML support
-
-<details><summary><b>Show example</b></summary>
+<details><summary><b>added HTML support</b></summary>
 
 You can now assign HTML to variables by using the "</>" symbol.
 
@@ -106,9 +102,8 @@ That will be possible in future updates of Quick Type.
 - fixed bugs with using for loops and arrays
 - removed support for files with ".qt" extension
 - support set only for ".quick" and ".quicktype" file extensions
-- todo: add variable support for html
 
-<details><summary><b>Show example</b></summary>
+<details><summary><b>todo: add variable support for html</b></summary>
 
 So you could do something like this
 
@@ -155,9 +150,8 @@ log("html", html)
 > We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
 
 ## 0.0.2
-- added arrays
 
-<details><summary><b>Show example</b></summary>
+<details><summary><b>added arrays</b></summary>
 
 You can use array by using the "[]" brackets like in every other programming language.
 
@@ -181,9 +175,7 @@ log("array:", array2[2], array[2])
 ```
 </details>
 
-- added for loops
-
-<details><summary><b>Show example</b></summary>
+<details><summary><b>added for loops</b></summary>
 
 You can use for loops for arrays like this
 
