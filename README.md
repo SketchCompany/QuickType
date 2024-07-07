@@ -99,10 +99,6 @@ That will be possible in future updates of Quick Type.
 
 </details>
 
-- fixed bugs with using for loops and arrays
-- removed support for files with ".qt" extension
-- support set only for ".quick" and ".quicktype" file extensions
-
 <details><summary><b>todo: add variable support for html</b></summary>
 
 So you could do something like this
@@ -145,6 +141,10 @@ c html = </>
 log("html", html)
 ```
 </details>
+
+- fixed bugs with using for loops and arrays
+- removed support for files with ".qt" extension
+- support set only for ".quick" and ".quicktype" file extensions
 
 ## 0.0.2
 
