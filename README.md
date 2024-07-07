@@ -14,6 +14,7 @@ This is the changelog of the language, not really the node package itself, becau
 ### 0.0.3
 > [!WARNING]
 > Support for ".qt" file extensions has been stopped and does not work anymore!
+
 > [!NOTE]
 > We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
 
