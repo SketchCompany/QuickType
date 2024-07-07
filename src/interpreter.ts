@@ -1,7 +1,7 @@
 import { ValueType, RuntimeValue, NumberValue, NullValue, create_null, StringValue} from "./values"
-import { ArrayLiteral, AssignmentExpr, BinaryExpr, CallExpr, FunctionDeclaration, Identifier, IfDeclaration, MemberExpr, NodeType, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, VarDeclaration} from "./ast"
+import { ArrayLiteral, AssignmentExpr, BinaryExpr, CallExpr, FunctionDeclaration, HTMLLiteral, Identifier, IfDeclaration, ImportLiteral, MemberExpr, NodeType, NumericLiteral, ObjectLiteral, Program, Stmt, StringLiteral, VarDeclaration} from "./ast"
 import Environment from "./environment"
-import { interpret_assignment, interpret_binary_expr, interpret_call_expr, interpret_identifier, interpret_object_expr, interpret_member_expr, interpret_array } from "./expressions"
+import { interpret_assignment, interpret_binary_expr, interpret_call_expr, interpret_identifier, interpret_object_expr, interpret_member_expr, interpret_array, interpret_import, interpret_html } from "./expressions"
 import { interpret_program, interpret_var_declaration, interpret_fn_declaration, interpret_if_declaration } from "./statements"
 
 export function interpret(astNode: Stmt, env: Environment): RuntimeValue {
@@ -15,6 +15,10 @@ export function interpret(astNode: Stmt, env: Environment): RuntimeValue {
             return interpret_identifier(astNode as Identifier, env)
         case "ArrayLiteral":
             return interpret_array(astNode as ArrayLiteral, env)
+        case "ImportLiteral":
+            return interpret_import(astNode as ImportLiteral, env)
+        case "HTMLLiteral":
+            return interpret_html(astNode as HTMLLiteral, env)
         case "ObjectLiteral":
             return interpret_object_expr(astNode as ObjectLiteral, env)
         case "CallExpr":

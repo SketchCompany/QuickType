@@ -21,6 +21,8 @@ export type NodeType =
   | "Identifier"
   | "BinaryExpr"
   | "ArrayLiteral"
+  | "ImportLiteral"
+  | "HTMLLiteral"
 
 
 export interface Stmt{
@@ -111,4 +113,15 @@ export interface IfDeclaration extends Expr{
 export interface ArrayLiteral extends Expr{
   kind: "ArrayLiteral"
   elements: Expr[]
+}
+
+export interface ImportLiteral extends Expr{
+  kind: "ImportLiteral"
+  name: StringLiteral,
+  program: Program
+}
+
+export interface HTMLLiteral extends Expr{
+  kind: "HTMLLiteral"
+  html: string
 }

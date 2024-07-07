@@ -1,5 +1,6 @@
-import {Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, IfDeclaration, FunctionDeclaration, AssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, StringLiteral, ArrayLiteral} from "./ast"
+import {Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, IfDeclaration, FunctionDeclaration, AssignmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, StringLiteral, ArrayLiteral, ImportLiteral, HTMLLiteral} from "./ast"
 import { tokenize, Token, TokenType } from "./lexer"
+import fs from "fs"
 
 export default class Parser{
     private tokens: Token[] = []
@@ -57,6 +58,8 @@ export default class Parser{
                 return this.parse_if_stmt()
             case TokenType.While:
                 return this.parse_if_stmt()
+            case TokenType.Import:
+                return this.parse_import_stmt()
             default:
                 return this.parse_expr()
         }
@@ -170,6 +173,18 @@ export default class Parser{
         else console.log("no else condition defined")
 
         return {kind: "IfDeclaration", condition, body} as IfDeclaration
+    }
+
+    private parse_import_stmt(): Stmt {
+        this.shift()
+        const name = this.parse_primary_expr()
+        if(name.kind != "StringLiteral"){
+            throw new Error("Expected string after import declaration.")
+        }
+        const data = fs.readFileSync(__dirname + "/../" + (name as StringLiteral).value + ".quick")
+        const parser = new Parser()
+        const program = parser.produceAST(data.toString())
+        return {name, program, kind: "ImportLiteral"} as ImportLiteral
     }
 
     // presidence
@@ -356,7 +371,7 @@ export default class Parser{
     }
 
     private parse_member_expr(): Expr{
-        let object = this.parse_unary_expr()
+        let object = this.parse_html_expr()
 
         while(this.get().type == TokenType.Dot || this.get().type == TokenType.OpenBracket){
             const operator = this.shift()
@@ -382,6 +397,13 @@ export default class Parser{
         }
 
         return object
+    }
+
+    private parse_html_expr(): Expr{
+        if(this.get().type == TokenType.HTML){
+            return {kind: "HTMLLiteral", html: this.shift().value} as HTMLLiteral
+        }
+        else return this.parse_unary_expr()
     }
 
     private parse_unary_expr(): Expr{

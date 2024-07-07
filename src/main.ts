@@ -1,7 +1,9 @@
 import Parser from "./parser";
 import {interpret} from "./interpreter";
 import {createGlobalEnvironment} from "./environment";
-import * as fs from "fs";
+import fs from "fs";
+
+const langaugeVersion = "0.0.3"
 
 /**
  * This method runs the complete programming language, to read your `input` / `code`, parse it and interpret it, so you can get an `output` / `result` about your `program`.
@@ -10,10 +12,10 @@ import * as fs from "fs";
 export async function runLanguage(inputSource: string) {
     const env = createGlobalEnvironment()
 
-    console.log("\nQuick Type v0.0.2\n")
+    console.log("\nQuick Type " + langaugeVersion + "\n")
 
     let input:string
-    if(inputSource.includes(".quicktype") || inputSource.includes(".quick") || inputSource.includes(".qt")){
+    if(inputSource.includes(".quicktype") || inputSource.includes(".quick")){
         input = fs.readFileSync(inputSource).toString()
     }
     else{

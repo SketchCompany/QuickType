@@ -1,7 +1,7 @@
 import { Expr, Stmt } from "./ast"
 import Environment from "./environment"
 
-export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "nativeFn" | "function" | "member" | "if" | "array"
+export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "nativeFn" | "function" | "member" | "if" | "array" | "import" | "html"
 
 export interface RuntimeValue {
     type: ValueType
@@ -67,12 +67,17 @@ export interface FunctionValue extends RuntimeValue {
     body: Stmt[]
 }
 
-// export interface ArrayValue extends RuntimeValue {
-//     type: "array",
-//     elements: RuntimeValue[],
-// }
-
 export interface ArrayValue extends RuntimeValue {
     type: "array",
     elements: Expr[],
+}
+
+export interface ImportValue extends RuntimeValue {
+    type: "import",
+    body: Stmt[]
+}
+
+export interface HTMLValue extends RuntimeValue {
+    type: "html",
+    html: string
 }

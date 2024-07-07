@@ -10,6 +10,7 @@ export enum TokenType{
     Identifier,
     String,
     Comment,
+    HTML,
 
     OpenParen, 
     CloseParen,
@@ -43,6 +44,7 @@ export enum TokenType{
     Else,
     While,
     Return,
+    Import,
 
     EOF,
 }
@@ -67,6 +69,7 @@ const KEYWORDS: Record<string, TokenType> = {
     "ngt": TokenType.NotGreaterComperator,
     "nls": TokenType.NotLessComperator,
     "while": TokenType.While,
+    "quicky": TokenType.Import,
 }
 
 function addToken(value = "", type: TokenType){
@@ -137,6 +140,19 @@ export function tokenize(code: string): Token[]{
         else if(src[0] === "."){
             tokens.push(addToken(src.shift(), TokenType.Dot))
         }
+        else if(src[0] == "<" && src[1] == "/" && src[2] == ">"){
+            let html = ""
+            src.shift()
+            src.shift()
+            src.shift()
+            while(src.length > 0 && src[0] + src[1] + src[2] != "</>"){
+                html += src.shift()
+            }
+            src.shift()
+            src.shift()
+            src.shift()
+            tokens.push(addToken(html, TokenType.HTML))
+        }
         else if(src[0] === ">"){
             tokens.push(addToken(src.shift(), TokenType.GreaterComperator))
         }
@@ -151,12 +167,10 @@ export function tokenize(code: string): Token[]{
             src.shift()
             tokens.push(addToken("&", TokenType.AmpersandOperator))
         }
-        else if(src[0] === "="){
-            if(src[1] === "="){
-                src.shift()
-                src.shift()
-                tokens.push(addToken("==", TokenType.EqualsComperator))
-            }
+        else if(src[0] + src[1] === "=="){
+            src.shift()
+            src.shift()
+            tokens.push(addToken("==", TokenType.EqualsComperator))
         }
         else if(src[0] === "!"){
             if(src[1] === "="){

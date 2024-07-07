@@ -62,21 +62,21 @@ function checkNumber(c) {
   return /[0-9]$/.test(c);
 }
 var KEYWORDS = {
-  "v": 25 /* Let */,
-  "c": 26 /* Const */,
-  "f": 27 /* Fn */,
-  "if": 28 /* If */,
-  "else": 29 /* Else */,
-  "and": 18 /* AmpersandOperator */,
-  "or": 17 /* VerticalBarOperator */,
-  "not": 20 /* NotEqualsComperator */,
-  "is": 19 /* EqualsComperator */,
-  "gt": 21 /* GreaterComperator */,
-  "ls": 22 /* LessComperator */,
-  "ngt": 23 /* NotGreaterComperator */,
-  "nls": 24 /* NotLessComperator */,
-  "for": 30 /* For */,
-  "while": 31 /* While */
+  "v": 26 /* Let */,
+  "c": 27 /* Const */,
+  "f": 28 /* Fn */,
+  "if": 29 /* If */,
+  "else": 30 /* Else */,
+  "and": 19 /* AmpersandOperator */,
+  "or": 18 /* VerticalBarOperator */,
+  "not": 21 /* NotEqualsComperator */,
+  "is": 20 /* EqualsComperator */,
+  "gt": 22 /* GreaterComperator */,
+  "ls": 23 /* LessComperator */,
+  "ngt": 24 /* NotGreaterComperator */,
+  "nls": 25 /* NotLessComperator */,
+  "while": 31 /* While */,
+  "i": 33 /* Import */
 };
 function addToken(value = "", type) {
   return { value, type };
@@ -86,17 +86,17 @@ function tokenize(code) {
   const src = code.split("");
   while (src.length > 0) {
     if (src[0] === "(") {
-      tokens.push(addToken(src.shift(), 4 /* OpenParen */));
+      tokens.push(addToken(src.shift(), 5 /* OpenParen */));
     } else if (src[0] === ")") {
-      tokens.push(addToken(src.shift(), 5 /* CloseParen */));
+      tokens.push(addToken(src.shift(), 6 /* CloseParen */));
     } else if (src[0] === "{") {
-      tokens.push(addToken(src.shift(), 6 /* OpenBrace */));
+      tokens.push(addToken(src.shift(), 7 /* OpenBrace */));
     } else if (src[0] === "}") {
-      tokens.push(addToken(src.shift(), 7 /* CloseBrace */));
+      tokens.push(addToken(src.shift(), 8 /* CloseBrace */));
     } else if (src[0] === "[") {
-      tokens.push(addToken(src.shift(), 8 /* OpenBracket */));
+      tokens.push(addToken(src.shift(), 9 /* OpenBracket */));
     } else if (src[0] === "]") {
-      tokens.push(addToken(src.shift(), 9 /* CloseBracket */));
+      tokens.push(addToken(src.shift(), 10 /* CloseBracket */));
     } else if (src[0] === "/" && src[1] === "*") {
       src.shift();
       src.shift();
@@ -113,47 +113,57 @@ function tokenize(code) {
         continue;
       }
     } else if (src[0] === "+" || src[0] === "-" || src[0] === "*" || src[0] === "/" || src[0] === "%") {
-      tokens.push(addToken(src.shift(), 10 /* BinaryOperator */));
+      tokens.push(addToken(src.shift(), 11 /* BinaryOperator */));
     } else if (src[0] === "=" && src[1] !== "=") {
-      tokens.push(addToken(src.shift(), 11 /* Equals */));
+      tokens.push(addToken(src.shift(), 12 /* Equals */));
     } else if (src[0] === ":") {
-      tokens.push(addToken(src.shift(), 14 /* Colon */));
+      tokens.push(addToken(src.shift(), 15 /* Colon */));
     } else if (src[0] === ",") {
-      tokens.push(addToken(src.shift(), 13 /* Comma */));
+      tokens.push(addToken(src.shift(), 14 /* Comma */));
     } else if (src[0] === ".") {
-      tokens.push(addToken(src.shift(), 15 /* Dot */));
+      tokens.push(addToken(src.shift(), 16 /* Dot */));
+    } else if (src[0] == "<" && src[1] == "/" && src[2] == ">") {
+      let html = "";
+      src.shift();
+      src.shift();
+      src.shift();
+      while (src.length > 0 && src[0] + src[1] + src[2] != "</>") {
+        html += src.shift();
+      }
+      src.shift();
+      src.shift();
+      src.shift();
+      tokens.push(addToken(html, 4 /* HTML */));
     } else if (src[0] === ">") {
-      tokens.push(addToken(src.shift(), 21 /* GreaterComperator */));
+      tokens.push(addToken(src.shift(), 22 /* GreaterComperator */));
     } else if (src[0] === "<") {
-      tokens.push(addToken(src.shift(), 22 /* LessComperator */));
+      tokens.push(addToken(src.shift(), 23 /* LessComperator */));
     } else if (src[0] === "|") {
       src.shift();
-      tokens.push(addToken("|", 17 /* VerticalBarOperator */));
+      tokens.push(addToken("|", 18 /* VerticalBarOperator */));
     } else if (src[0] === "&") {
       src.shift();
-      tokens.push(addToken("&", 18 /* AmpersandOperator */));
-    } else if (src[0] === "=") {
-      if (src[1] === "=") {
-        src.shift();
-        src.shift();
-        tokens.push(addToken("==", 19 /* EqualsComperator */));
-      }
+      tokens.push(addToken("&", 19 /* AmpersandOperator */));
+    } else if (src[0] + src[1] === "==") {
+      src.shift();
+      src.shift();
+      tokens.push(addToken("==", 20 /* EqualsComperator */));
     } else if (src[0] === "!") {
       if (src[1] === "=") {
         src.shift();
         src.shift();
-        tokens.push(addToken("!=", 20 /* NotEqualsComperator */));
+        tokens.push(addToken("!=", 21 /* NotEqualsComperator */));
       } else if (src[1] === "<") {
         src.shift();
         src.shift();
-        tokens.push(addToken("!<", 24 /* NotLessComperator */));
+        tokens.push(addToken("!<", 25 /* NotLessComperator */));
       } else if (src[1] === ">") {
         src.shift();
         src.shift();
-        tokens.push(addToken("!>", 23 /* NotGreaterComperator */));
+        tokens.push(addToken("!>", 24 /* NotGreaterComperator */));
       } else {
         src.shift();
-        tokens.push(addToken("!", 16 /* ExclamationMark */));
+        tokens.push(addToken("!", 17 /* ExclamationMark */));
       }
     } else {
       if (src[0] === '"') {
@@ -197,17 +207,18 @@ function tokenize(code) {
       }
     }
   }
-  tokens.push({ type: 33 /* EOF */, value: "EndOfFile" });
+  tokens.push({ type: 34 /* EOF */, value: "EndOfFile" });
   return tokens;
 }
 
 // src/parser.ts
-var Parser = class {
+var import_fs = __toESM(require("fs"));
+var Parser = class _Parser {
   constructor() {
     this.tokens = [];
   }
   not_eof() {
-    return this.tokens[0].type != 33 /* EOF */;
+    return this.tokens[0].type != 34 /* EOF */;
   }
   get() {
     return this.tokens[0];
@@ -240,35 +251,35 @@ var Parser = class {
   }
   parse_stmt() {
     switch (this.get().type) {
-      case 25 /* Let */:
-      case 26 /* Const */:
+      case 26 /* Let */:
+      case 27 /* Const */:
         return this.parse_var_declaration();
-      case 27 /* Fn */:
+      case 28 /* Fn */:
         return this.parse_fn_declaration();
-      case 28 /* If */:
+      case 29 /* If */:
         return this.parse_if_stmt();
-      case 30 /* For */:
-        return this.parse_for_stmt();
       case 31 /* While */:
         return this.parse_if_stmt();
+      case 33 /* Import */:
+        return this.parse_import_stmt();
       default:
         return this.parse_expr();
     }
   }
-  parse_for_stmt() {
-    this.shift();
-    const name = this.expected(1 /* Identifier */, "Expected for loop name following for keyword.").value;
-    this.expected(4 /* OpenParen */, "Expected opening parentheses in for loop declaration.");
-    const count = this.parse_additive_expr();
-    this.expected(5 /* CloseParen */, "Missing closing parentheses in for loop decalration.");
-    this.expected(6 /* OpenBrace */, "Expected opening brace in for loop declaration.");
-    const body = [];
-    while (this.get().type !== 33 /* EOF */ && this.get().type !== 7 /* CloseBrace */) {
-      body.push(this.parse_stmt());
-    }
-    this.expected(7 /* CloseBrace */, "Expected closing brace in for loop declaration.");
-    return { kind: "ForDeclaration", name, count, body };
-  }
+  // private parse_for_stmt(): Stmt {
+  //     this.shift() // remove for
+  //     const name = this.expected(TokenType.Identifier, "Expected for loop name following for keyword.").value
+  //     this.expected(TokenType.OpenParen, "Expected opening parentheses in for loop declaration.")
+  //     const count = this.parse_additive_expr()
+  //     this.expected(TokenType.CloseParen, "Missing closing parentheses in for loop decalration.")
+  //     this.expected(TokenType.OpenBrace, "Expected opening brace in for loop declaration.")
+  //     const body: Stmt[] = []
+  //     while(this.get().type !== TokenType.EOF && this.get().type !== TokenType.CloseBrace){
+  //         body.push(this.parse_stmt())
+  //     }
+  //     this.expected(TokenType.CloseBrace, "Expected closing brace in for loop declaration.")
+  //     return {kind: "ForDeclaration", name, count, body} as ForDeclaration
+  // }
   parse_fn_declaration() {
     this.shift();
     const name = this.expected(1 /* Identifier */, "Expected function name following fn keyword.").value;
@@ -280,12 +291,12 @@ var Parser = class {
       }
       params.push(arg.symbol);
     }
-    this.expected(6 /* OpenBrace */, "Expected function body following declaration.");
+    this.expected(7 /* OpenBrace */, "Expected function body following declaration.");
     const body = [];
-    while (this.get().type !== 33 /* EOF */ && this.get().type !== 7 /* CloseBrace */) {
+    while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
       body.push(this.parse_stmt());
     }
-    this.expected(7 /* CloseBrace */, "Closing brace expected inside function declaration.");
+    this.expected(8 /* CloseBrace */, "Closing brace expected inside function declaration.");
     const fn = {
       body,
       name,
@@ -295,42 +306,54 @@ var Parser = class {
     return fn;
   }
   parse_var_declaration() {
-    const isConstant = this.shift().type == 26 /* Const */;
+    const isConstant = this.shift().type == 27 /* Const */;
     const identifier = this.expected(1 /* Identifier */, "Expected identifier name following let | const keywords.").value;
-    this.expected(11 /* Equals */, "Expected equals token following identifier in var declaration.");
+    this.expected(12 /* Equals */, "Expected equals token following identifier in var declaration.");
     const declaration = { kind: "VarDeclaration", identifier, value: this.parse_expr(), constant: isConstant };
     return declaration;
   }
   parse_if_stmt() {
     this.shift();
-    this.expected(4 /* OpenParen */, "Expected opening parantheses in if statement.");
+    this.expected(5 /* OpenParen */, "Expected opening parantheses in if statement.");
     const condition = this.parse_condition_expr();
-    this.expected(5 /* CloseParen */, "Missing closing parantheses in if statement.");
-    this.expected(6 /* OpenBrace */, "Expected function body following if statement declaration.");
+    this.expected(6 /* CloseParen */, "Missing closing parantheses in if statement.");
+    this.expected(7 /* OpenBrace */, "Expected function body following if statement declaration.");
     const body = [];
-    while (this.get().type !== 33 /* EOF */ && this.get().type !== 7 /* CloseBrace */) {
+    while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
       body.push(this.parse_stmt());
     }
-    this.expected(7 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
-    if (this.get().type == 29 /* Else */ && this.next().type == 28 /* If */) {
+    this.expected(8 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
+    if (this.get().type == 30 /* Else */ && this.next().type == 29 /* If */) {
       this.shift();
       const elseIfDeclaration = this.parse_if_stmt();
       return { kind: "IfDeclaration", condition, body, elseIfDeclaration };
-    } else if (this.get().type == 29 /* Else */) {
+    } else if (this.get().type == 30 /* Else */) {
       this.shift();
       let elseBody = [];
-      this.expected(6 /* OpenBrace */, "Expected function body following if statement declaration.");
-      while (this.get().type !== 33 /* EOF */ && this.get().type !== 7 /* CloseBrace */) {
+      this.expected(7 /* OpenBrace */, "Expected function body following if statement declaration.");
+      while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
         elseBody.push(this.parse_stmt());
       }
-      this.expected(7 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
+      this.expected(8 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
       return { kind: "IfDeclaration", condition, body, elseBody };
     } else
       console.log("no else condition defined");
     return { kind: "IfDeclaration", condition, body };
   }
+  parse_import_stmt() {
+    this.shift();
+    const name = this.parse_primary_expr();
+    if (name.kind != "StringLiteral") {
+      throw new Error("Expected string after import declaration.");
+    }
+    const data = import_fs.default.readFileSync(__dirname + "/../" + name.value + ".quick");
+    const parser = new _Parser();
+    const program = parser.produceAST(data.toString());
+    return { name, program, kind: "ImportLiteral" };
+  }
   // presidence
   // Assignment
+  // Array
   // Object
   // Additve
   // Multiplicative
@@ -341,49 +364,66 @@ var Parser = class {
     return this.parse_assignment_expr();
   }
   parse_assignment_expr() {
-    const left = this.parse_object_expr();
-    if (this.get().type == 11 /* Equals */) {
+    const left = this.parse_array();
+    if (this.get().type == 12 /* Equals */) {
       this.shift();
       const value = this.parse_assignment_expr();
       return { value, assigne: left, kind: "AssignmentExpr" };
     }
     return left;
   }
+  parse_array() {
+    if (this.get().type == 9 /* OpenBracket */) {
+      this.shift();
+      const elements = [];
+      while (this.get().type != 34 /* EOF */ && this.get().type != 10 /* CloseBracket */) {
+        const element = this.parse_object_expr();
+        elements.push(element);
+        if (this.get().type != 14 /* Comma */) {
+          break;
+        } else
+          this.expected(14 /* Comma */, "Expected comma after declaration of an array element.");
+      }
+      this.expected(10 /* CloseBracket */, "Unexpected token found inside array expression. Expected clsoing bracket.");
+      return { kind: "ArrayLiteral", elements };
+    } else
+      return this.parse_object_expr();
+  }
   parse_object_expr() {
-    if (this.get().type !== 6 /* OpenBrace */) {
+    if (this.get().type !== 7 /* OpenBrace */) {
       return this.parse_additive_expr();
     }
     this.shift();
     const properties = new Array();
-    while (this.not_eof() && this.get().type != 7 /* CloseBrace */) {
+    while (this.not_eof() && this.get().type != 8 /* CloseBrace */) {
       const key = this.expected(1 /* Identifier */, "Object literal key expected").value;
-      if (this.get().type == 13 /* Comma */) {
+      if (this.get().type == 14 /* Comma */) {
         this.shift();
         properties.push({ key, kind: "Property" });
         continue;
-      } else if (this.get().type == 7 /* CloseBrace */) {
+      } else if (this.get().type == 8 /* CloseBrace */) {
         properties.push({ key, kind: "Property" });
         continue;
       }
-      this.expected(14 /* Colon */, "Missing colon following identifier in Object literal");
+      this.expected(15 /* Colon */, "Missing colon following identifier in Object literal");
       const value = this.parse_stmt();
       properties.push({ kind: "Property", value, key });
-      if (this.get().type != 7 /* CloseBrace */) {
-        this.expected(13 /* Comma */, "Expected comma or closing brace following property");
+      if (this.get().type != 8 /* CloseBrace */) {
+        this.expected(14 /* Comma */, "Expected comma or closing brace following property");
       }
     }
-    this.expected(7 /* CloseBrace */, "Object literal missing closing brace.");
+    this.expected(8 /* CloseBrace */, "Object literal missing closing brace.");
     return { kind: "ObjectLiteral", properties };
   }
   parse_condition_expr() {
     let left = this.parse_additive_expr();
     const comperator = this.get();
-    while (comperator.type == 18 /* AmpersandOperator */ || comperator.type == 17 /* VerticalBarOperator */ || comperator.type == 19 /* EqualsComperator */ || comperator.type == 20 /* NotEqualsComperator */ || comperator.type == 21 /* GreaterComperator */ || comperator.type == 22 /* LessComperator */ || comperator.type == 23 /* NotGreaterComperator */ || comperator.type == 24 /* NotLessComperator */) {
-      if (this.get().type == 5 /* CloseParen */)
+    while (comperator.type == 19 /* AmpersandOperator */ || comperator.type == 18 /* VerticalBarOperator */ || comperator.type == 20 /* EqualsComperator */ || comperator.type == 21 /* NotEqualsComperator */ || comperator.type == 22 /* GreaterComperator */ || comperator.type == 23 /* LessComperator */ || comperator.type == 24 /* NotGreaterComperator */ || comperator.type == 25 /* NotLessComperator */) {
+      if (this.get().type == 6 /* CloseParen */)
         return left;
       const operator = this.shift();
       let right;
-      if (operator.type == 17 /* VerticalBarOperator */ || operator.type == 18 /* AmpersandOperator */) {
+      if (operator.type == 18 /* VerticalBarOperator */ || operator.type == 19 /* AmpersandOperator */) {
         right = this.parse_condition_expr();
       } else
         right = this.parse_additive_expr();
@@ -426,7 +466,7 @@ var Parser = class {
   }
   parse_call_member_expr() {
     const member = this.parse_member_expr();
-    if (this.get().type == 4 /* OpenParen */) {
+    if (this.get().type == 5 /* OpenParen */) {
       return this.parse_call_expr(member);
     } else {
       return member;
@@ -438,31 +478,31 @@ var Parser = class {
       caller,
       args: this.parse_args()
     };
-    if (this.get().type == 4 /* OpenParen */) {
+    if (this.get().type == 5 /* OpenParen */) {
       call_expr = this.parse_call_expr(call_expr);
     }
     return call_expr;
   }
   parse_args() {
-    this.expected(4 /* OpenParen */, "Expected open paranthesis.");
-    const args = this.get().type == 5 /* CloseParen */ ? [] : this.parse_arguments_list_expr();
-    this.expected(5 /* CloseParen */, "Missing closing parenthesis inside arguments list.");
+    this.expected(5 /* OpenParen */, "Expected open paranthesis.");
+    const args = this.get().type == 6 /* CloseParen */ ? [] : this.parse_arguments_list_expr();
+    this.expected(6 /* CloseParen */, "Missing closing parenthesis inside arguments list.");
     return args;
   }
   parse_arguments_list_expr() {
     const args = [this.parse_assignment_expr()];
-    while (this.get().type == 13 /* Comma */ && this.shift()) {
+    while (this.get().type == 14 /* Comma */ && this.shift()) {
       args.push(this.parse_assignment_expr());
     }
     return args;
   }
   parse_member_expr() {
-    let object = this.parse_unary_expr();
-    while (this.get().type == 15 /* Dot */ || this.get().type == 8 /* OpenBracket */) {
+    let object = this.parse_html_expr();
+    while (this.get().type == 16 /* Dot */ || this.get().type == 9 /* OpenBracket */) {
       const operator = this.shift();
       let property;
       let computed;
-      if (operator.type == 15 /* Dot */) {
+      if (operator.type == 16 /* Dot */) {
         computed = false;
         property = this.parse_primary_expr();
         if (property.kind != "Identifier") {
@@ -471,18 +511,24 @@ var Parser = class {
       } else {
         computed = true;
         property = this.parse_expr();
-        this.expected(9 /* CloseBracket */, "Missing closing bracket in computed value.");
+        this.expected(10 /* CloseBracket */, "Missing closing bracket in computed value.");
       }
       object = { kind: "MemberExpr", object, property, computed };
     }
     return object;
   }
+  parse_html_expr() {
+    if (this.get().type == 4 /* HTML */) {
+      return { kind: "HTMLLiteral", html: this.shift().value };
+    } else
+      return this.parse_unary_expr();
+  }
   parse_unary_expr() {
-    if (this.get().type == 16 /* ExclamationMark */) {
+    if (this.get().type == 17 /* ExclamationMark */) {
       this.shift();
       const left = this.parse_additive_expr();
       const right = this.parse_additive_expr();
-      return { kind: "BinaryExpr", left, right, operator: { type: 20 /* NotEqualsComperator */, value: "!" } };
+      return { kind: "BinaryExpr", left, right, operator: { type: 21 /* NotEqualsComperator */, value: "!" } };
     } else
       return this.parse_primary_expr();
   }
@@ -495,11 +541,11 @@ var Parser = class {
         return { kind: "NumericLiteral", value: parseFloat(this.shift().value) };
       case 2 /* String */:
         return { kind: "StringLiteral", value: this.shift().value };
-      case 4 /* OpenParen */:
+      case 5 /* OpenParen */:
         this.shift();
-        const value = this.parse_expr();
-        this.expected(5 /* CloseParen */, "Unexpected token found inside parenthesised expression. Expected closing parenthes");
-        return value;
+        const expressionValue = this.parse_expr();
+        this.expected(6 /* CloseParen */, "Unexpected token found inside parenthesised expression. Expected closing parenthes.");
+        return expressionValue;
       default:
         console.error("Unexpected token ", this.get(), " found during parsing");
         throw new Error("Unexpected token " + JSON.stringify(this.get()) + " found during parsing");
@@ -563,6 +609,30 @@ var Natives = class {
     }
     return result;
   }
+  for(args, scope) {
+    if (args[1].type == "function") {
+      if (args[0].type == "number") {
+        const count = args[1].value;
+        for (let i = 0; i < count; i++) {
+          interpret_call_expr({ kind: "CallExpr", args: [
+            { kind: "NumericLiteral", value: i }
+          ], caller: { kind: "Identifier", symbol: args[0].name } }, scope);
+        }
+      } else if (args[0].type == "array") {
+        const array = args[0].elements;
+        const count = array.length;
+        for (let i = 0; i < count; i++) {
+          const element = array[i];
+          interpret_call_expr({ kind: "CallExpr", args: [
+            array.shift(),
+            { kind: "NumericLiteral", value: i },
+            { kind: "ArrayLiteral", elements: array }
+          ], caller: { kind: "Identifier", symbol: args[1].name } }, scope);
+        }
+      }
+    }
+    return create_null();
+  }
 };
 
 // src/environment.ts
@@ -575,6 +645,7 @@ function createGlobalEnvironment() {
   env.declareVar("log", create_nativeFn(natives.log), true);
   env.declareVar("upper", create_nativeFn(natives.upper), true);
   env.declareVar("lower", create_nativeFn(natives.lower), true);
+  env.declareVar("for", create_nativeFn(natives.for), true);
   env.declareVar("time", create_number(Date.now()), true);
   return env;
 }
@@ -618,7 +689,7 @@ var Environment = class {
 function interpret_binary_expr(binop, env) {
   const lhs = interpret(binop.left, env);
   const rhs = interpret(binop.right, env);
-  if (binop.operator.type == 18 /* AmpersandOperator */ || binop.operator.type == 17 /* VerticalBarOperator */ || binop.operator.type == 19 /* EqualsComperator */ || binop.operator.type == 20 /* NotEqualsComperator */ || binop.operator.type == 22 /* LessComperator */ || binop.operator.type == 21 /* GreaterComperator */ || binop.operator.type == 24 /* NotLessComperator */ || binop.operator.type == 23 /* NotGreaterComperator */) {
+  if (binop.operator.type == 19 /* AmpersandOperator */ || binop.operator.type == 18 /* VerticalBarOperator */ || binop.operator.type == 20 /* EqualsComperator */ || binop.operator.type == 21 /* NotEqualsComperator */ || binop.operator.type == 23 /* LessComperator */ || binop.operator.type == 22 /* GreaterComperator */ || binop.operator.type == 25 /* NotLessComperator */ || binop.operator.type == 24 /* NotGreaterComperator */) {
     return interpret_condition_binary_expr(lhs, rhs, binop.operator);
   }
   if (lhs.type == "number" && rhs.type == "number") {
@@ -630,42 +701,42 @@ function interpret_binary_expr(binop, env) {
   return create_null();
 }
 function interpret_condition_binary_expr(lhs, rhs, operator) {
-  if (operator.type == 19 /* EqualsComperator */) {
+  if (operator.type == 20 /* EqualsComperator */) {
     if (lhs == rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 20 /* NotEqualsComperator */) {
+  } else if (operator.type == 21 /* NotEqualsComperator */) {
     if (lhs != rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 21 /* GreaterComperator */) {
+  } else if (operator.type == 22 /* GreaterComperator */) {
     if (lhs > rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 22 /* LessComperator */) {
+  } else if (operator.type == 23 /* LessComperator */) {
     if (lhs > rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 24 /* NotLessComperator */) {
+  } else if (operator.type == 25 /* NotLessComperator */) {
     if (lhs < rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 23 /* NotGreaterComperator */) {
+  } else if (operator.type == 24 /* NotGreaterComperator */) {
     if (lhs > rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 18 /* AmpersandOperator */) {
+  } else if (operator.type == 19 /* AmpersandOperator */) {
     if (lhs && rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else if (operator.type == 17 /* VerticalBarOperator */) {
+  } else if (operator.type == 18 /* VerticalBarOperator */) {
     if (lhs || rhs) {
       return { type: "boolean", value: true };
     } else
@@ -729,6 +800,24 @@ function interpret_member_expr(expr, env) {
     if (!value)
       value = create_null();
     return value;
+  } else if (lhs.type == "array") {
+    const array = lhs;
+    let value;
+    if (expr.computed) {
+      if (expr.property.kind == "NumericLiteral") {
+        const computedValue = interpret(expr.property, env);
+        if (!computedValue || computedValue.type != "number") {
+          console.error("Cannot interpret array expression: ", expr.property);
+          throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property));
+        }
+        value = interpret(array.elements[computedValue.value], env);
+      } else {
+        console.error("Cannot interpret array expression, because computed value is not a number: ", expr.property);
+        throw new Error("Cannot interpret array expression, because computed value is not a number: " + JSON.stringify(expr.property));
+      }
+    } else
+      throw new Error("Cannot interpret array expression, becuase it is not set as an computed expression.");
+    return value;
   }
   return lhs;
 }
@@ -743,13 +832,11 @@ function interpret_call_expr(expr, env) {
     const func = fn;
     const scope = new Environment(func.declarationEnv);
     for (let i = 0; i < func.parameters.length; i++) {
-      if (func.parameters.length < args.length) {
-        throw new Error("Cannot assign more arguments than the function can handle: parameters: " + func.parameters.length + " passed arguments: " + args.length);
-      } else if (func.parameters.length > args.length) {
-        throw new Error("Cannot assign less arguments than the function handles: needed paramters: " + func.parameters.length);
-      }
       const varname = func.parameters[i];
-      scope.declareVar(varname, args[i], false);
+      if (args.length - 1 < i) {
+        scope.declareVar(varname, create_null(), false);
+      } else
+        scope.declareVar(varname, args[i], false);
     }
     let result = create_null();
     for (const stmt of func.body) {
@@ -767,6 +854,16 @@ function interpret_assignment(node, env) {
   }
   const varname = node.assigne.symbol;
   return env.assignVar(varname, interpret(node.value, env));
+}
+function interpret_array(node, env) {
+  return { type: "array", elements: node.elements };
+}
+function interpret_import(node, env) {
+  const result = interpret(node.program, env);
+  return env.declareVar(node.name.value, result, true);
+}
+function interpret_html(node, env) {
+  return { type: "html", html: node.html };
 }
 
 // src/statements.ts
@@ -812,20 +909,6 @@ function interpret_if_declaration(declaration, env) {
     return create_null();
   }
 }
-function interpret_for_declaration(declaration, env) {
-  if (declaration.count.kind == "NumericLiteral") {
-    let result;
-    for (let i = 0; i < declaration.count.value; i++) {
-      for (const stmt of declaration.body) {
-        result = interpret(stmt, env);
-      }
-    }
-    return result;
-  } else {
-    console.log("Count in interpretation of for declaration was not a numeric literal: ", declaration.count);
-    return create_null();
-  }
-}
 
 // src/interpreter.ts
 function interpret(astNode, env) {
@@ -836,6 +919,12 @@ function interpret(astNode, env) {
       return { value: astNode.value, type: "string" };
     case "Identifier":
       return interpret_identifier(astNode, env);
+    case "ArrayLiteral":
+      return interpret_array(astNode, env);
+    case "ImportLiteral":
+      return interpret_import(astNode, env);
+    case "HTMLLiteral":
+      return interpret_html(astNode, env);
     case "ObjectLiteral":
       return interpret_object_expr(astNode, env);
     case "CallExpr":
@@ -854,8 +943,6 @@ function interpret(astNode, env) {
       return interpret_fn_declaration(astNode, env);
     case "IfDeclaration":
       return interpret_if_declaration(astNode, env);
-    case "ForDeclaration":
-      return interpret_for_declaration(astNode, env);
     default:
       console.error("This AST Node has not yet been setup for interpretation: ", astNode);
       throw new Error("This AST Node has not yet been setup for interpretation: " + JSON.stringify(astNode));
@@ -863,14 +950,15 @@ function interpret(astNode, env) {
 }
 
 // src/main.ts
-var fs = __toESM(require("fs"));
+var import_fs2 = __toESM(require("fs"));
+var langaugeVersion = "0.0.3";
 function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
-    console.log("\nQuick Type v0.0.1\n");
+    console.log("\nQuick Type " + langaugeVersion + "\n");
     let input;
-    if (inputSource.includes(".quicktype") || inputSource.includes(".quick") || inputSource.includes(".qt")) {
-      input = fs.readFileSync(inputSource).toString();
+    if (inputSource.includes(".quicktype") || inputSource.includes(".quick")) {
+      input = import_fs2.default.readFileSync(inputSource).toString();
     } else {
       input = inputSource;
     }
@@ -881,6 +969,7 @@ function runLanguage(inputSource) {
 }
 
 // src/index.ts
+run("api.quick");
 function run(input) {
   runLanguage(input);
 }

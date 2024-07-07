@@ -15,7 +15,7 @@ export function createGlobalEnvironment(){
     env.declareVar("upper", create_nativeFn(natives.upper), true)
     env.declareVar("lower", create_nativeFn(natives.lower), true)
     env.declareVar("for", create_nativeFn(natives.for), true)
-    env.declareVar("time", create_number(Date.now()), true)
+    env.declareVar("time", create_nativeFn(natives.time), true)
 
     return env
 }

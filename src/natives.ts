@@ -1,7 +1,7 @@
 import { ArrayLiteral, CallExpr, Expr, Identifier, NumericLiteral } from "./ast";
 import Environment from "./environment";
 import { interpret_call_expr } from "./expressions";
-import { ArrayValue, BooleanValue, FunctionValue, NativeFnValue, NullValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_null, create_string } from "./values";
+import { ArrayValue, BooleanValue, FunctionValue, NativeFnValue, NullValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_null, create_number, create_string } from "./values";
 
 
 export default class Natives{
@@ -22,10 +22,14 @@ export default class Natives{
                 console.log(arg)
                 return create_null()
             }
-            finalLog += "   "
+            finalLog += "  "
         }
         console.log(finalLog)
         return create_null()
+    }
+    public time(args: RuntimeValue[], scope: Environment): RuntimeValue {
+        const time = Date.now()
+        return create_number(time)
     }
     public upper(args: RuntimeValue[], scope: Environment): RuntimeValue {
         let result: RuntimeValue = create_null()
@@ -50,11 +54,11 @@ export default class Natives{
     public for(args: RuntimeValue[], scope: Environment): RuntimeValue {
         if(args[1].type == "function"){
             if(args[0].type == "number"){
-                const count = (args[1] as NumberValue).value
+                const count = (args[0] as NumberValue).value
                 for (let i = 0; i < count; i++) {
                     interpret_call_expr({kind: "CallExpr", args: [
                         {kind: "NumericLiteral", value: i} as NumericLiteral,
-                    ] as Expr[], caller: {kind: "Identifier", symbol: (args[0] as FunctionValue).name} as Identifier} as CallExpr, scope)                
+                    ] as Expr[], caller: {kind: "Identifier", symbol: (args[1] as FunctionValue).name} as Identifier} as CallExpr, scope)
                 }
             }
             else if(args[0].type == "array"){
@@ -69,6 +73,7 @@ export default class Natives{
                     ] as Expr[], caller: {kind: "Identifier", symbol: (args[1] as FunctionValue).name} as Identifier} as CallExpr, scope)           
                 }
             }
+            else throw new Error("Invalid paramter at position 0. Cannot use " + args[0] + " as first parameter")
         }
         return create_null()
     }

@@ -1,8 +1,9 @@
-import { ArrayLiteral, AssignmentExpr, BinaryExpr, CallExpr, Expr, Identifier, MemberExpr, ObjectLiteral, StringLiteral } from "./ast"
+import { ArrayLiteral, AssignmentExpr, BinaryExpr, CallExpr, Expr, HTMLLiteral, Identifier, ImportLiteral, MemberExpr, ObjectLiteral, StringLiteral } from "./ast"
 import Environment from "./environment"
 import { interpret } from "./interpreter"
 import { Token, TokenType } from "./lexer"
-import { ArrayValue, BooleanValue, FunctionValue, NativeFnValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_nativeFn, create_null } from "./values"
+import fs from "fs"
+import { ArrayValue, BooleanValue, FunctionValue, HTMLValue, ImportValue, NativeFnValue, NumberValue, ObjectValue, RuntimeValue, StringValue, create_nativeFn, create_null } from "./values"
 
 
 
@@ -136,20 +137,20 @@ export function interpret_member_expr(expr: MemberExpr, env: Environment): Runti
         const array = lhs as ArrayValue
         let value:any
         if(expr.computed){
-            if(expr.property.kind == "NumericLiteral"){
-                const computedValue = interpret(expr.property, env)
-                if(!computedValue || computedValue.type != "number"){
-                    console.error("Cannot interpret array expression: ", expr.property)
-                    throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property))
-                }
-                value = interpret(array.elements[(computedValue as NumberValue).value], env)
+            const computedValue = interpret(expr.property, env)
+            if(!computedValue || computedValue.type != "number"){
+                console.error("Cannot interpret array expression: ", expr.property)
+                throw new Error("Cannot interpret array expression: " + JSON.stringify(expr.property))
             }
-            else{
-                console.error("Cannot interpret array expression, because computed value is not a number: ", expr.property)
-                throw new Error("Cannot interpret array expression, because computed value is not a number: " + JSON.stringify(expr.property))
+            const index = (computedValue as NumberValue).value
+            if(array.elements.length < index){
+                throw new Error("Cannot get value from array, because it is out of range.")
             }
+            const arrayElement = array.elements.at(index)
+            if(!arrayElement) throw new Error("Value from array could not be found at position " + index + ". Value was " + arrayElement)
+            value = interpret(arrayElement, env)
         }
-        else throw new Error("Cannot interpret array expression, becuase it is not set as an computed expression.")
+        else throw new Error("Cannot interpret array expression, because it is not set as an computed expression.")
         return value
     }
     return lhs
@@ -215,4 +216,13 @@ export function interpret_array(node: ArrayLiteral, env: Environment): RuntimeVa
     // return {type: "array", elements: array} as ArrayValue
 
     return {type: "array", elements: node.elements} as ArrayValue
+}
+
+export function interpret_import(node: ImportLiteral, env: Environment): RuntimeValue{
+    const result = interpret(node.program, env)
+    return env.declareVar(node.name.value, result, true)
+}
+
+export function interpret_html(node: HTMLLiteral, env: Environment): RuntimeValue{
+    return {type: "html", html: node.html} as HTMLValue
 }
