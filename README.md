@@ -157,7 +157,7 @@ log("html", html)
 ## 0.0.2
 - added arrays
 
-<details><summary><b>Show instructions</b></summary>
+- <details><summary><b>Show instructions</b></summary>
 
 You can use array by using the "[]" brackets like in every other programming language.
 
@@ -183,7 +183,7 @@ log("array:", array2[2], array[2])
 
 - added for loops
 
-<details><summary><b>Show instructions</b></summary>
+- <details><summary><b>Show instructions</b></summary>
 
 You can use for loops for arrays like this
 
