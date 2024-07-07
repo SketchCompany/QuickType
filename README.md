@@ -25,6 +25,9 @@ This is the changelog of the language, not really the node package itself, becau
 - <details><summary><b>Show instructions</b></summary>
 
 To import a script, use the keyword "quicky" (stands for "quickly import a .quick file") followed by a string with the filename without the ".quick" extension
+
+<br>
+
 `mainScript.quick`
 ```js
 quicky "anotherScript"
@@ -35,6 +38,9 @@ log("a test function from another script", antoherScript.testFunction())
 ```
 
 To export data of a script (file), you define a variable at the very end of it.
+
+<br>
+
 `anotherScript.quick`
 ```js
 log("anotherScript: test")
@@ -61,6 +67,9 @@ c export = {
 - <details><summary><b>Show instructions</b></summary>
 
 You can now assign HTML to variables by using the "</>" symbol.
+
+<br>
+
 `htmlSupport.quick`
 ```html
 c html = </>
@@ -102,6 +111,9 @@ That will be possible in future updates of Quick Type.
 - <details><summary><b>Show example</b></summary>
 
 So you could do something like this
+
+<br>
+
 `future.quick`
 ```html
 c localTime = time()
@@ -148,6 +160,9 @@ log("html", html)
 <details><summary><b>Show instructions</b></summary>
 
 You can use array by using the "[]" brackets like in every other programming language.
+
+<br>
+
 `arrays.quick`
 ```js
 c array = [
@@ -171,6 +186,9 @@ log("array:", array2[2], array[2])
 <details><summary><b>Show instructions</b></summary>
 
 You can use for loops for arrays like this
+
+<br>
+
 `forLoops.quick`
 ```js
 c array = [
@@ -190,6 +208,9 @@ for(array, readArray)
 ```
 
 You can also call a function for multiple times like this
+
+<br>
+
 `forLoops2.quick`
 ```js
 c repetitions = 5
