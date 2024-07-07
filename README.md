@@ -64,7 +64,7 @@ c export = {
 
 - added HTML support
 
-* <details><summary><b>Show example</b></summary>
+<details><summary><b>Show example</b></summary>
 
 You can now assign HTML to variables by using the "</>" symbol.
 
