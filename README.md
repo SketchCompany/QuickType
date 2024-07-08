@@ -6,23 +6,23 @@ You only need to install this package on your computer and after that you can st
 If you'd like to have some language support for Quick Type, you can install the [VS Code "Quick Type Language Support" extension](https://marketplace.visualstudio.com/items?itemName=SketchCompany.qt-ls-sc).
 
 ## Usage
-If you'd like to know how to use "Quick Type", you can visit our documentation at [our documentation website](https://docs.sketch-company.de).
+If you'd like to know how to use `Quick Type`, you can visit our documentation at [our documentation website](https://docs.sketch-company.de).
 
 ## Changelog
 This is the changelog of the language, not really the node package itself, because the version of the node package changes more often than the language itself. So don't worry about the versions, that the changelog shows, they are correct.
 
 ## 0.0.3
 > [!WARNING]
-> Support for ".qt" file extensions has been stopped and does not work anymore!
+> Support for `.qt` file extensions has been stopped and does not work anymore!
 
 > [!NOTE]
-> We recommend using the ".quick" extension, if you are using the `import` functionality, because it can only import files with ".quick" extension.
+> We recommend using the `.quick` extension, if you are using the `import` functionality, because it can only import files with `.quick` extension.
 
 <br>
 
-<details><summary><b>added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)</b></summary>
+<details><summary><b>added import functionality by using `quicky` followed by the name of the file to be imported without extension `(.quick)`</b></summary>
 
-To import a script, use the keyword "quicky" (stands for "quickly import a .quick file") followed by a string with the filename without the ".quick" extension
+To import a script, use the keyword `quicky` (stands for "quickly import a .quick file") followed by a string with the filename without the `.quick` extension
 
 <br>
 
@@ -143,14 +143,14 @@ log("html", html)
 </details>
 
 - fixed bugs with using for loops and arrays
-- removed support for files with ".qt" extension
-- support set only for ".quick" and ".quicktype" file extensions
+- removed support for files with `.qt` extension
+- support set only for `.quick` and `.quicktype` file extensions
 
 ## 0.0.2
 
 <details><summary><b>added arrays</b></summary>
 
-You can use array by using the "[]" brackets like in every other programming language.
+You can use array by using the `[]` brackets like in every other programming language.
 
 <br>
 
