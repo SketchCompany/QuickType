@@ -20,7 +20,7 @@ This is the changelog of the language, not really the node package itself, becau
 
 <br>
 
-<details><summary><b>added import functionality by using `quicky` followed by the name of the file to be imported without extension `(.quick)`</b></summary>
+<details><summary><b>added import functionality by using "quicky" followed by the name of the file to be imported without extension (.quick)</b></summary>
 
 To import a script, use the keyword `quicky` (stands for "quickly import a .quick file") followed by a string with the filename without the `.quick` extension
 
@@ -62,7 +62,7 @@ c export = {
 
 <details><summary><b>added HTML support</b></summary>
 
-You can now assign HTML to variables by using the "</>" symbol.
+You can now assign HTML to variables by using the `</>` symbol.
 
 <br>
 
