@@ -170,7 +170,6 @@ export default class Parser{
             return {kind: "IfDeclaration", condition, body, elseBody} as IfDeclaration
 
         }
-        else console.log("no else condition defined")
 
         return {kind: "IfDeclaration", condition, body} as IfDeclaration
     }
@@ -277,7 +276,9 @@ export default class Parser{
             comperator.type == TokenType.GreaterComperator ||
             comperator.type == TokenType.LessComperator ||
             comperator.type == TokenType.NotGreaterComperator ||
-            comperator.type == TokenType.NotLessComperator
+            comperator.type == TokenType.NotLessComperator ||
+            comperator.type == TokenType.EqualsOrGreaterComperator ||
+            comperator.type == TokenType.EqualsOrLessComperator
         ){
             if(this.get().type == TokenType.CloseParen) return left
             const operator = this.shift()

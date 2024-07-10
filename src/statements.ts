@@ -34,6 +34,7 @@ export function interpret_fn_declaration(declaration: FunctionDeclaration, env: 
 export function interpret_if_declaration(declaration: IfDeclaration, env: Environment): RuntimeValue{
     //console.dir(declaration, {depth: null})
     const value = interpret(declaration.condition, env)
+    // console.log(declaration, value)
     if((value as BooleanValue).value == true){
         let result: RuntimeValue = create_null()
         // interpret the function body line by line

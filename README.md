@@ -11,6 +11,11 @@ If you'd like to know how to use `Quick Type`, you can visit our documentation a
 ## Changelog
 This is the changelog of the language, not really the node package itself, because the version of the node package changes more often than the language itself. So don't worry about the versions, that the changelog shows, they are correct.
 
+## 0.0.4
+- fixed bugs when using for loops and arrays
+- fixed issue when using if statements with the `&` (and) or `|` (or) operator
+- fixed other small bugs
+
 ## 0.0.3
 > [!WARNING]
 > Support for `.qt` file extensions has been stopped and does not work anymore!
@@ -142,7 +147,6 @@ log("html", html)
 ```
 </details>
 
-- fixed bugs with using for loops and arrays
 - removed support for files with `.qt` extension
 - support set only for `.quick` and `.quicktype` file extensions
 
@@ -150,7 +154,7 @@ log("html", html)
 
 <details><summary><b>added arrays</b></summary><br>
 
-You can use array by using the `[]` brackets like in every other programming language.
+You can create an array by using the `[]` brackets like in every other programming language.
 
 <br>
 
@@ -212,7 +216,111 @@ for(repetitions, readArray)
 ```
 </details>
 
-- added if, else if and else statements
+<details><summary><b>added if, else if and else statements</b></summary><br>
+
+To use if and else statements, you need to do it like in every other programming language.
+Only the `&&` and `||` symbol are diffrent here! You have to use only a single symbol of them.
+
+<br>
+
+`ifAndElseStatements.quick`
+```js
+c state = true
+c number = 2
+
+f checkState(){
+    
+    // if statement
+    if(state == true){
+        log("state is true")
+    }
+
+    // if, else statement
+    if(state != true){
+        log("state is false")
+    }
+    else{
+        log("state is true")
+    }
+
+    // if, else if, else statement
+    if(number == 0){
+        log("number is 0")
+    }
+    else if(number == 1){
+        log("number is 1")
+    }
+    else{
+        log("number is", number)
+    }
+
+    // if, else if, else statement
+    if(number == 0 | number == 1){ // "|" also know as "||" stands for "or" and means that at least on condition has to apply
+        log("number is 0 or 1")
+    }
+    else if(number == 1 & number <= 5){ // "&" also known as "&&" stands for "and" and means that both conditions have to apply
+        log("number is 1 or number is 5 or lower")
+    }
+    else {
+        log("idk the number")
+    }
+}
+
+checkState()
+```
+
+You can also use keywords like `is` (equal to `==`), `not` (equal to `!=`), `gt` (stands for "greater than", euqal to `>`), `ls` (stands for "less than", equal to `<`), `ngt` (stands for "not greater than" equal to `!>`), `nls` (stands for "not less than", equal to `!<`), `isgt` (stands for "is equal or greater than", equal to `>=`), `isls` (stands for "is equal or less than", equal to `<=`).
+
+
+
+`ifAndElseStatementsWithWords.quick`
+```js
+c state = true
+c number = 2
+
+f checkState(){
+    
+    // if statement
+    if(state is true){
+        log("state is true")
+    }
+
+    // if, else statement
+    if(state not true){
+        log("state is false")
+    }
+    else{
+        log("state is true")
+    }
+
+    // if, else if, else statement
+    if(number is 0){
+        log("number is 0")
+    }
+    else if(number is 1){
+        log("number is 1")
+    }
+    else{
+        log("number is", number)
+    }
+
+    // if, else if, else statement
+    if(number is 0 or number is 1){
+        log("number is 0 or 1")
+    }
+    else if(number is 1 and number isls 5){
+        log("number is 1 or number is 5 or lower")
+    }
+    else {
+        log("idk the number")
+    }
+}
+
+checkState()
+```
+
+</details>
+
 - fixed some small bugs
 
 ## 0.0.1

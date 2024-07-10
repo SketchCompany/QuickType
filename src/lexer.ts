@@ -36,6 +36,8 @@ export enum TokenType{
     LessComperator,
     NotGreaterComperator,
     NotLessComperator,
+    EqualsOrGreaterComperator,
+    EqualsOrLessComperator,
 
     Let,
     Const,
@@ -68,6 +70,8 @@ const KEYWORDS: Record<string, TokenType> = {
     "ls": TokenType.LessComperator,
     "ngt": TokenType.NotGreaterComperator,
     "nls": TokenType.NotLessComperator,
+    "isgt": TokenType.EqualsOrGreaterComperator,
+    "isls": TokenType.EqualsOrLessComperator,
     "while": TokenType.While,
     "quicky": TokenType.Import,
 }
@@ -75,7 +79,6 @@ const KEYWORDS: Record<string, TokenType> = {
 function addToken(value = "", type: TokenType){
     return {value, type}
 }
-
 /**
  * tokenizes a given `string` into the `token type` and its `value`
  * @param {string} code is the `string` that needs to be tokenized
@@ -84,10 +87,10 @@ function addToken(value = "", type: TokenType){
  * {token: "IDENTIFIER", value: "example"}
  * ```
  */
+
 export function tokenize(code: string): Token[]{
     const tokens = new Array<Token>()
     const src = code.split("")
-
     while(src.length > 0){
         if(src[0] === "("){
             tokens.push(addToken(src.shift(), TokenType.OpenParen))
@@ -125,9 +128,6 @@ export function tokenize(code: string): Token[]{
         else if(src[0] === "+" || src[0] === "-" || src[0] === "*" || src[0] === "/" || src[0] === "%"){
             tokens.push(addToken(src.shift(), TokenType.BinaryOperator))
         }
-        else if(src[0] === "=" && src[1] !== "="){
-            tokens.push(addToken(src.shift(), TokenType.Equals))
-        }
         // else if(src[0] === ";"){
         //     tokens.push(addToken(src.shift(), TokenType.Semicolon))
         // }
@@ -153,10 +153,23 @@ export function tokenize(code: string): Token[]{
             src.shift()
             tokens.push(addToken(html, TokenType.HTML))
         }
-        else if(src[0] === ">"){
+        else if(src[0] === ">" && src[1] !== "="){
             tokens.push(addToken(src.shift(), TokenType.GreaterComperator))
         }
-        else if(src[0] === "<"){
+        else if(src[0] === "<" && src[1] !== "="){
+            tokens.push(addToken(src.shift(), TokenType.LessComperator))
+        }
+        else if(src[0] + src[1] === ">="){
+            src.shift()
+            src.shift()
+            tokens.push(addToken(">=", TokenType.EqualsOrGreaterComperator))
+        }
+        else if(src[0] + src[1] === "<="){
+            src.shift()
+            src.shift()
+            tokens.push(addToken("<=", TokenType.EqualsOrLessComperator))
+        }
+        else if(src[0] === "<" && src[1] !== "="){
             tokens.push(addToken(src.shift(), TokenType.LessComperator))
         }
         else if(src[0] === "|"){
@@ -166,6 +179,9 @@ export function tokenize(code: string): Token[]{
         else if(src[0] === "&"){
             src.shift()
             tokens.push(addToken("&", TokenType.AmpersandOperator))
+        }
+        else if(src[0] === "=" && src[1] !== "="){
+            tokens.push(addToken(src.shift(), TokenType.Equals))
         }
         else if(src[0] + src[1] === "=="){
             src.shift()

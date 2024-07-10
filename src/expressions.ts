@@ -11,7 +11,17 @@ export function interpret_binary_expr(binop: BinaryExpr, env: Environment): Runt
     const lhs = interpret(binop.left, env)
     const rhs = interpret(binop.right, env)
 
-    if(binop.operator.type == TokenType.AmpersandOperator || binop.operator.type == TokenType.VerticalBarOperator || binop.operator.type == TokenType.EqualsComperator || binop.operator.type == TokenType.NotEqualsComperator || binop.operator.type == TokenType.LessComperator || binop.operator.type == TokenType.GreaterComperator || binop.operator.type == TokenType.NotLessComperator || binop.operator.type == TokenType.NotGreaterComperator){
+    if(binop.operator.type == TokenType.AmpersandOperator || 
+        binop.operator.type == TokenType.VerticalBarOperator || 
+        binop.operator.type == TokenType.EqualsComperator || 
+        binop.operator.type == TokenType.NotEqualsComperator || 
+        binop.operator.type == TokenType.LessComperator || 
+        binop.operator.type == TokenType.GreaterComperator || 
+        binop.operator.type == TokenType.NotLessComperator || 
+        binop.operator.type == TokenType.NotGreaterComperator ||
+        binop.operator.type == TokenType.EqualsOrGreaterComperator ||
+        binop.operator.type == TokenType.EqualsOrLessComperator
+    ){
         return interpret_condition_binary_expr(lhs, rhs, binop.operator)
     }
     if(lhs.type == "number" && rhs.type == "number"){
@@ -44,7 +54,7 @@ export function interpret_condition_binary_expr(lhs: RuntimeValue, rhs: RuntimeV
         else return {type: "boolean", value: false} as BooleanValue
     }
     else if(operator.type == TokenType.LessComperator){
-        if(lhs > rhs){
+        if(lhs < rhs){
             return {type: "boolean", value: true} as BooleanValue
         }
         else return {type: "boolean", value: false} as BooleanValue
@@ -61,19 +71,40 @@ export function interpret_condition_binary_expr(lhs: RuntimeValue, rhs: RuntimeV
         }
         else return {type: "boolean", value: false} as BooleanValue
     }
+    else if(operator.type == TokenType.EqualsOrGreaterComperator){
+        if(lhs >= rhs){
+            return {type: "boolean", value: true} as BooleanValue
+        }
+        else return {type: "boolean", value: false} as BooleanValue
+    }
+    else if(operator.type == TokenType.EqualsOrLessComperator){
+        if(lhs <= rhs){
+            return {type: "boolean", value: true} as BooleanValue
+        }
+        else return {type: "boolean", value: false} as BooleanValue
+    }
     else if(operator.type == TokenType.AmpersandOperator){
-        if(lhs && rhs){
+        if(lhs.type != "boolean" || rhs.type != "boolean"){
+            throw new Error("To interpret an ampersand operator (&&), it needs to have boolean, otherwise it can't be interpreted.")
+        }
+        if((lhs as BooleanValue).value && (rhs as BooleanValue).value){
             return {type: "boolean", value: true} as BooleanValue
         }
         else return {type: "boolean", value: false} as BooleanValue
     }
     else if(operator.type == TokenType.VerticalBarOperator){
-        if(lhs || rhs){
+        if(lhs.type != "boolean" || rhs.type != "boolean"){
+            throw new Error("To interpret an vertical bar operator (||) it needs to have boolean, otherwise it can't be interpreted.")
+        }
+        if((lhs as BooleanValue).value || (rhs as BooleanValue).value){
             return {type: "boolean", value: true} as BooleanValue
         }
         else return {type: "boolean", value: false} as BooleanValue
     }
-    else return {type: "boolean", value: false} as BooleanValue
+    else{
+        console.warn("expressions.ts", "the condition type could not be interpreted, because it was never handled.")
+        return {type: "boolean", value: false} as BooleanValue
+    }
 }
 
 export function interpret_string_binary_expr(lhs: StringValue, rhs: StringValue): StringValue{
