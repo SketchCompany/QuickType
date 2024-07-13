@@ -3,7 +3,7 @@ import {interpret} from "./interpreter";
 import {createGlobalEnvironment} from "./environment";
 import fs from "fs";
 
-const langaugeVersion = "0.0.4"
+const languageVersion = "0.0.4"
 
 /**
  * This method runs the complete programming language, to read your `input` / `code`, parse it and interpret it, so you can get an `output` / `result` about your `program`.
@@ -12,7 +12,7 @@ const langaugeVersion = "0.0.4"
 export async function runLanguage(inputSource: string) {
     const env = createGlobalEnvironment()
 
-    console.log("\nQuick Type " + langaugeVersion + "\n")
+    console.log("\nQuick Type " + languageVersion + "\n")
 
     let input:string
     if(inputSource.includes(".quicktype") || inputSource.includes(".quick")){
