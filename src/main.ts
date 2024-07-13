@@ -3,7 +3,7 @@ import {interpret} from "./interpreter";
 import {createGlobalEnvironment} from "./environment";
 import fs from "fs";
 
-const langaugeVersion = "0.0.3"
+const langaugeVersion = "0.0.4"
 
 /**
  * This method runs the complete programming language, to read your `input` / `code`, parse it and interpret it, so you can get an `output` / `result` about your `program`.
