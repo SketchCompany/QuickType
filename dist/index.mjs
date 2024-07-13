@@ -27,11 +27,11 @@ function checkNumber(c) {
   return /[0-9]$/.test(c);
 }
 var KEYWORDS = {
-  "v": 26 /* Let */,
-  "c": 27 /* Const */,
-  "f": 28 /* Fn */,
-  "if": 29 /* If */,
-  "else": 30 /* Else */,
+  "v": 28 /* Let */,
+  "c": 29 /* Const */,
+  "f": 30 /* Fn */,
+  "if": 31 /* If */,
+  "else": 32 /* Else */,
   "and": 19 /* AmpersandOperator */,
   "or": 18 /* VerticalBarOperator */,
   "not": 21 /* NotEqualsComperator */,
@@ -40,8 +40,10 @@ var KEYWORDS = {
   "ls": 23 /* LessComperator */,
   "ngt": 24 /* NotGreaterComperator */,
   "nls": 25 /* NotLessComperator */,
-  "while": 31 /* While */,
-  "quicky": 33 /* Import */
+  "isgt": 26 /* EqualsOrGreaterComperator */,
+  "isls": 27 /* EqualsOrLessComperator */,
+  "while": 33 /* While */,
+  "quicky": 35 /* Import */
 };
 function addToken(value = "", type) {
   return { value, type };
@@ -79,8 +81,6 @@ function tokenize(code) {
       }
     } else if (src[0] === "+" || src[0] === "-" || src[0] === "*" || src[0] === "/" || src[0] === "%") {
       tokens.push(addToken(src.shift(), 11 /* BinaryOperator */));
-    } else if (src[0] === "=" && src[1] !== "=") {
-      tokens.push(addToken(src.shift(), 12 /* Equals */));
     } else if (src[0] === ":") {
       tokens.push(addToken(src.shift(), 15 /* Colon */));
     } else if (src[0] === ",") {
@@ -99,9 +99,19 @@ function tokenize(code) {
       src.shift();
       src.shift();
       tokens.push(addToken(html, 4 /* HTML */));
-    } else if (src[0] === ">") {
+    } else if (src[0] === ">" && src[1] !== "=") {
       tokens.push(addToken(src.shift(), 22 /* GreaterComperator */));
-    } else if (src[0] === "<") {
+    } else if (src[0] === "<" && src[1] !== "=") {
+      tokens.push(addToken(src.shift(), 23 /* LessComperator */));
+    } else if (src[0] + src[1] === ">=") {
+      src.shift();
+      src.shift();
+      tokens.push(addToken(">=", 26 /* EqualsOrGreaterComperator */));
+    } else if (src[0] + src[1] === "<=") {
+      src.shift();
+      src.shift();
+      tokens.push(addToken("<=", 27 /* EqualsOrLessComperator */));
+    } else if (src[0] === "<" && src[1] !== "=") {
       tokens.push(addToken(src.shift(), 23 /* LessComperator */));
     } else if (src[0] === "|") {
       src.shift();
@@ -109,6 +119,8 @@ function tokenize(code) {
     } else if (src[0] === "&") {
       src.shift();
       tokens.push(addToken("&", 19 /* AmpersandOperator */));
+    } else if (src[0] === "=" && src[1] !== "=") {
+      tokens.push(addToken(src.shift(), 12 /* Equals */));
     } else if (src[0] + src[1] === "==") {
       src.shift();
       src.shift();
@@ -172,7 +184,7 @@ function tokenize(code) {
       }
     }
   }
-  tokens.push({ type: 34 /* EOF */, value: "EndOfFile" });
+  tokens.push({ type: 36 /* EOF */, value: "EndOfFile" });
   return tokens;
 }
 
@@ -183,7 +195,7 @@ var Parser = class _Parser {
     this.tokens = [];
   }
   not_eof() {
-    return this.tokens[0].type != 34 /* EOF */;
+    return this.tokens[0].type != 36 /* EOF */;
   }
   get() {
     return this.tokens[0];
@@ -216,16 +228,16 @@ var Parser = class _Parser {
   }
   parse_stmt() {
     switch (this.get().type) {
-      case 26 /* Let */:
-      case 27 /* Const */:
+      case 28 /* Let */:
+      case 29 /* Const */:
         return this.parse_var_declaration();
-      case 28 /* Fn */:
+      case 30 /* Fn */:
         return this.parse_fn_declaration();
-      case 29 /* If */:
+      case 31 /* If */:
         return this.parse_if_stmt();
-      case 31 /* While */:
+      case 33 /* While */:
         return this.parse_if_stmt();
-      case 33 /* Import */:
+      case 35 /* Import */:
         return this.parse_import_stmt();
       default:
         return this.parse_expr();
@@ -258,7 +270,7 @@ var Parser = class _Parser {
     }
     this.expected(7 /* OpenBrace */, "Expected function body following declaration.");
     const body = [];
-    while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
+    while (this.get().type !== 36 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
       body.push(this.parse_stmt());
     }
     this.expected(8 /* CloseBrace */, "Closing brace expected inside function declaration.");
@@ -271,7 +283,7 @@ var Parser = class _Parser {
     return fn;
   }
   parse_var_declaration() {
-    const isConstant = this.shift().type == 27 /* Const */;
+    const isConstant = this.shift().type == 29 /* Const */;
     const identifier = this.expected(1 /* Identifier */, "Expected identifier name following let | const keywords.").value;
     this.expected(12 /* Equals */, "Expected equals token following identifier in var declaration.");
     const declaration = { kind: "VarDeclaration", identifier, value: this.parse_expr(), constant: isConstant };
@@ -284,25 +296,24 @@ var Parser = class _Parser {
     this.expected(6 /* CloseParen */, "Missing closing parantheses in if statement.");
     this.expected(7 /* OpenBrace */, "Expected function body following if statement declaration.");
     const body = [];
-    while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
+    while (this.get().type !== 36 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
       body.push(this.parse_stmt());
     }
     this.expected(8 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
-    if (this.get().type == 30 /* Else */ && this.next().type == 29 /* If */) {
+    if (this.get().type == 32 /* Else */ && this.next().type == 31 /* If */) {
       this.shift();
       const elseIfDeclaration = this.parse_if_stmt();
       return { kind: "IfDeclaration", condition, body, elseIfDeclaration };
-    } else if (this.get().type == 30 /* Else */) {
+    } else if (this.get().type == 32 /* Else */) {
       this.shift();
       let elseBody = [];
       this.expected(7 /* OpenBrace */, "Expected function body following if statement declaration.");
-      while (this.get().type !== 34 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
+      while (this.get().type !== 36 /* EOF */ && this.get().type !== 8 /* CloseBrace */) {
         elseBody.push(this.parse_stmt());
       }
       this.expected(8 /* CloseBrace */, "Closing brace expected inside if statement declaration.");
       return { kind: "IfDeclaration", condition, body, elseBody };
-    } else
-      console.log("no else condition defined");
+    }
     return { kind: "IfDeclaration", condition, body };
   }
   parse_import_stmt() {
@@ -341,7 +352,7 @@ var Parser = class _Parser {
     if (this.get().type == 9 /* OpenBracket */) {
       this.shift();
       const elements = [];
-      while (this.get().type != 34 /* EOF */ && this.get().type != 10 /* CloseBracket */) {
+      while (this.get().type != 36 /* EOF */ && this.get().type != 10 /* CloseBracket */) {
         const element = this.parse_object_expr();
         elements.push(element);
         if (this.get().type != 14 /* Comma */) {
@@ -383,7 +394,7 @@ var Parser = class _Parser {
   parse_condition_expr() {
     let left = this.parse_additive_expr();
     const comperator = this.get();
-    while (comperator.type == 19 /* AmpersandOperator */ || comperator.type == 18 /* VerticalBarOperator */ || comperator.type == 20 /* EqualsComperator */ || comperator.type == 21 /* NotEqualsComperator */ || comperator.type == 22 /* GreaterComperator */ || comperator.type == 23 /* LessComperator */ || comperator.type == 24 /* NotGreaterComperator */ || comperator.type == 25 /* NotLessComperator */) {
+    while (comperator.type == 19 /* AmpersandOperator */ || comperator.type == 18 /* VerticalBarOperator */ || comperator.type == 20 /* EqualsComperator */ || comperator.type == 21 /* NotEqualsComperator */ || comperator.type == 22 /* GreaterComperator */ || comperator.type == 23 /* LessComperator */ || comperator.type == 24 /* NotGreaterComperator */ || comperator.type == 25 /* NotLessComperator */ || comperator.type == 26 /* EqualsOrGreaterComperator */ || comperator.type == 27 /* EqualsOrLessComperator */) {
       if (this.get().type == 6 /* CloseParen */)
         return left;
       const operator = this.shift();
@@ -659,7 +670,7 @@ var Environment = class {
 function interpret_binary_expr(binop, env) {
   const lhs = interpret(binop.left, env);
   const rhs = interpret(binop.right, env);
-  if (binop.operator.type == 19 /* AmpersandOperator */ || binop.operator.type == 18 /* VerticalBarOperator */ || binop.operator.type == 20 /* EqualsComperator */ || binop.operator.type == 21 /* NotEqualsComperator */ || binop.operator.type == 23 /* LessComperator */ || binop.operator.type == 22 /* GreaterComperator */ || binop.operator.type == 25 /* NotLessComperator */ || binop.operator.type == 24 /* NotGreaterComperator */) {
+  if (binop.operator.type == 19 /* AmpersandOperator */ || binop.operator.type == 18 /* VerticalBarOperator */ || binop.operator.type == 20 /* EqualsComperator */ || binop.operator.type == 21 /* NotEqualsComperator */ || binop.operator.type == 23 /* LessComperator */ || binop.operator.type == 22 /* GreaterComperator */ || binop.operator.type == 25 /* NotLessComperator */ || binop.operator.type == 24 /* NotGreaterComperator */ || binop.operator.type == 26 /* EqualsOrGreaterComperator */ || binop.operator.type == 27 /* EqualsOrLessComperator */) {
     return interpret_condition_binary_expr(lhs, rhs, binop.operator);
   }
   if (lhs.type == "number" && rhs.type == "number") {
@@ -687,7 +698,7 @@ function interpret_condition_binary_expr(lhs, rhs, operator) {
     } else
       return { type: "boolean", value: false };
   } else if (operator.type == 23 /* LessComperator */) {
-    if (lhs > rhs) {
+    if (lhs < rhs) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
@@ -701,18 +712,36 @@ function interpret_condition_binary_expr(lhs, rhs, operator) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
+  } else if (operator.type == 26 /* EqualsOrGreaterComperator */) {
+    if (lhs >= rhs) {
+      return { type: "boolean", value: true };
+    } else
+      return { type: "boolean", value: false };
+  } else if (operator.type == 27 /* EqualsOrLessComperator */) {
+    if (lhs <= rhs) {
+      return { type: "boolean", value: true };
+    } else
+      return { type: "boolean", value: false };
   } else if (operator.type == 19 /* AmpersandOperator */) {
-    if (lhs && rhs) {
+    if (lhs.type != "boolean" || rhs.type != "boolean") {
+      throw new Error("To interpret an ampersand operator (&&), it needs to have boolean, otherwise it can't be interpreted.");
+    }
+    if (lhs.value && rhs.value) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
   } else if (operator.type == 18 /* VerticalBarOperator */) {
-    if (lhs || rhs) {
+    if (lhs.type != "boolean" || rhs.type != "boolean") {
+      throw new Error("To interpret an vertical bar operator (||) it needs to have boolean, otherwise it can't be interpreted.");
+    }
+    if (lhs.value || rhs.value) {
       return { type: "boolean", value: true };
     } else
       return { type: "boolean", value: false };
-  } else
+  } else {
+    console.warn("expressions.ts", "the condition type could not be interpreted, because it was never handled.");
     return { type: "boolean", value: false };
+  }
 }
 function interpret_string_binary_expr(lhs, rhs) {
   const result = lhs.value + rhs.value;
@@ -923,7 +952,7 @@ function interpret(astNode, env) {
 
 // src/main.ts
 import fs2 from "fs";
-var langaugeVersion = "0.0.3";
+var langaugeVersion = "0.0.4";
 function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
