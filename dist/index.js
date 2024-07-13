@@ -987,11 +987,11 @@ function interpret(astNode, env) {
 
 // src/main.ts
 var import_fs2 = __toESM(require("fs"));
-var langaugeVersion = "0.0.4";
+var languageVersion = "0.0.4";
 function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
-    console.log("\nQuick Type " + langaugeVersion + "\n");
+    console.log("\nQuick Type " + languageVersion + "\n");
     let input;
     if (inputSource.includes(".quicktype") || inputSource.includes(".quick")) {
       input = import_fs2.default.readFileSync(inputSource).toString();

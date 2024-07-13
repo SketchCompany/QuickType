@@ -952,11 +952,11 @@ function interpret(astNode, env) {
 
 // src/main.ts
 import fs2 from "fs";
-var langaugeVersion = "0.0.4";
+var languageVersion = "0.0.4";
 function runLanguage(inputSource) {
   return __async(this, null, function* () {
     const env = createGlobalEnvironment();
-    console.log("\nQuick Type " + langaugeVersion + "\n");
+    console.log("\nQuick Type " + languageVersion + "\n");
     let input;
     if (inputSource.includes(".quicktype") || inputSource.includes(".quick")) {
       input = fs2.readFileSync(inputSource).toString();
